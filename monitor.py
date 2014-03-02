@@ -3,7 +3,6 @@ import serial
 from matplotlib import pyplot as plt
 from matplotlib import animation
 import numpy as np
-import math
 
 arduino = serial.Serial('COM6', 9600)
 
@@ -19,6 +18,9 @@ line, = ax.plot([], [], 'Yellow')
 
 lastx = 0
 
+maxy = -9999
+miny = 9999
+
 def init():
     line.set_data([], [])
     return line,
@@ -29,11 +31,18 @@ def animate(i):
 	x.append(lastx)
 	lastx += 0.1
 	data = float(arduino.readline())
+	global maxy
+	maxy = max(maxy, data)
+	global miny
+	miny = min(miny, data)
+
 	y = line.get_ydata()
 	y.append(data)
 	line.set_data(x, y)
 	ax.set_xlim([lastx-20, lastx])
-	#ax.set_ylim([np.min(y)-20, np.amax(y)+20])
+
+	ax.set_ylim([miny-20, maxy+20])
+
 	return line,
 
 anim = animation.FuncAnimation(fig, animate, init_func=init, frames=200, 
