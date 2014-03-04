@@ -7,8 +7,8 @@ import numpy as np
 # Constantes
 PORTA 	= "COM6"
 BAUD 	= 9600
-DT 		= 3./10
-MARGIN 	= 20
+DT 		= 1./10
+MARGIN 	= 8
 
 # Variáveis
 t 	 = 0
@@ -51,6 +51,7 @@ def animate(i):
 	x0.append(t)
 	x1.append(t)
 
+	arduino.flush()
 	data = arduino.readline()
 	if "ArduinoScopio:" in data:
 		data = data.replace("ArduinoScopio:", "")
@@ -81,8 +82,14 @@ def animate(i):
 
 	return canal0, canal1
 
-anim = animation.FuncAnimation(fig, animate, init_func=init, frames=200, 
-	interval=20, blit=False)
+anim = animation.FuncAnimation(
+	fig, 
+	animate, 
+	init_func=init, 
+	frames=200, 
+	interval=5, 
+	blit=False
+)
 
 
 # Customização do Gráfico
